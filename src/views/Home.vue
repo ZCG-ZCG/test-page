@@ -35,9 +35,9 @@ export default {
 					extractedCode: this.codeForm.code
 				}
 			}).then(res => {
-				console.log(res)
+				// console.log(res)
 				if (res.result.code === 200) {
-					this.$router.push('/details')
+					this.$router.push(`/details?code=${this.codeForm.code}`)
 				} else {
 					this.$message.error(`获取信息失败！${res.result.message ? res.result.message : ''}`)
 				}
