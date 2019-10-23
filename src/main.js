@@ -5,8 +5,13 @@ import store from './store'
 import './registerServiceWorker'
 import './plugins/element.js'
 // import 'babel-polyfill'
+// import VueBetterScroll from 'vue2-better-scroll'
+import Lazyload from 'mint-ui'
+Vue.use(Lazyload)
 
 Vue.config.productionTip = false
+
+
 
 new Vue({
 	router,
