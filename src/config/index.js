@@ -7,10 +7,12 @@ export default {
 		// 查找生成验证码页面
 		findExtraction: apiHost + '/extraction/findPage',
 		// 查找分享页面下载相关数据
-		downExtraction: apiHost + 'extraction/findOrder',
+		downExtraction: apiHost + '/extraction/findOrder',
 		// 查找详情页的任务完成的进度条
 		findSpeedPro: apiHost + '/extraction/findSpeedPro',
 		// 查找订单城市
-		findCity: apiHost + '/extraction/findCity'
+		findCity: apiHost + '/extraction/findCity',
+		// 获取任务详情进度条
+		sgTaskSpeedProgress: apiHost + '/task/sgTaskSpeedProgress',
 	}
 }

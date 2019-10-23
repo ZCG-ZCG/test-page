@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import './plugins/element.js'
+// import 'babel-polyfill'
 
 Vue.config.productionTip = false
 
