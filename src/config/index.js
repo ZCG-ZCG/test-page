@@ -1,6 +1,6 @@
-// const apiHost = 'http://39.100.53.120:8000'
+const apiHost = 'http://39.100.53.120:8000'
 // const apiHost = 'http://192.168.1.178:8000'
-const apiHost = 'http://192.168.1.233:8000'
+// const apiHost = 'http://192.168.1.233:8000'
 
 export default {
 	api: {
