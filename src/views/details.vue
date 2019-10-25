@@ -12,7 +12,7 @@
         @pulling-down="onPullingDown"
         @pulling-up="onPullingUp"
       >
-        <div class="title">亲爱的客户：您的方案执行进度如下</div>
+        <div class="title" style="padding-top:30px;">亲爱的客户：您的方案执行进度如下</div>
         <el-row class="layout-margin">
           <el-col :span="8">
             <span>总任务进度：</span>
@@ -65,13 +65,10 @@
 
 <script>
 import HttpUtils from '../util/HttpUtils'
-// import DropDownRefresh from '@/components/DrowDownRefresh'
-// import { VueBetterScroll } from 'vue2-better-scroll'
-// import { BScroll } from '../components/better-scroll/index.js'
+import { getCookie } from '../util/CookieUtils'
+
 
 export default {
-	// name: 'shareDetails',
-
 	beforeCreate() {
 		this.$options.components.VueBetterScroll = require('../components/better-scroll/index.js').default
 	},
@@ -111,13 +108,14 @@ export default {
 		}
 	},
 	created() {
-		this.code = this.$route.query.code
-		// this.getDetails()
+		this.code = JSON.parse(getCookie('extractedCode'))
+	
+		this.onPullingDown()
 		this.getPro()
 		this.getDownUrl()
 	},
 	mounted() {
-		this.onPullingDown()
+		// this.onPullingDown()
 	},
 	methods: {
 		// 下载点位照片
@@ -162,7 +160,7 @@ export default {
 			this.getDetails().then(res => {
 				this.imgList = res
 				this.$refs.scroll.forceUpdate(true)
-				console.log(this.imgList)
+				// console.log(this.imgList)
 			})
 		},
 		onPullingUp() {
@@ -181,6 +179,7 @@ export default {
 		},
 		// 获取页面详情方法
 		getDetails() {
+			// debugger
 			return new Promise(resolve => {
 				HttpUtils.request({
 					api: 'findExtraction',
@@ -249,7 +248,7 @@ export default {
 
 .position-box
   position fixed
-  top 30px
+  top 0px
   left 0
   right 0
   bottom 0

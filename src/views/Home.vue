@@ -14,6 +14,7 @@
 
 <script>
 import HttpUtils from '../util/HttpUtils'
+import { setCookie } from '../util/CookieUtils'
 
 export default {
 	name: 'home',
@@ -37,7 +38,9 @@ export default {
 			}).then(res => {
 				// console.log(res)
 				if (res.result.code === 200) {
-					this.$router.push(`/details?code=${this.codeForm.code}`)
+					this.$router.replace('/details')
+			
+					setCookie('extractedCode', JSON.stringify(this.codeForm.code))
 				} else {
 					this.$message.error(`获取信息失败！${res.result.message ? res.result.message : ''}`)
 				}
