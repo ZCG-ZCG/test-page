@@ -100,8 +100,9 @@ export default {
 			finishReportUrl: '',
 			imgList: [],
 			shareForm: {
-				city: '',
-				orderId: ''
+				// city: '',
+				// stage: '',
+				// orderId: ''
 			},
 			current: 1,
 			pages: ''
@@ -111,8 +112,8 @@ export default {
 		this.code = JSON.parse(getCookie('extractedCode'))
 	
 		this.onPullingDown()
-		this.getPro()
 		this.getDownUrl()
+		// this.getPro()
 	},
 	mounted() {
 		// this.onPullingDown()
@@ -160,7 +161,6 @@ export default {
 			this.getDetails().then(res => {
 				this.imgList = res
 				this.$refs.scroll.forceUpdate(true)
-				// console.log(this.imgList)
 			})
 		},
 		onPullingUp() {
@@ -191,8 +191,7 @@ export default {
 					}
 				}).then(res => {
 					if (res.result.code === 200) {
-						let data = res.result.data
-
+						let data = res.result.data	
 						this.pages = res.result.meta.pages
 						let temp = []
 						data.map(val => {
@@ -213,10 +212,16 @@ export default {
 				}
 			}).then(res => {
 				if (res.result.code === 200) {
-					this.pptUrl = res.result.data.pptUrl
-					this.zipUrl = res.result.data.zipUrl
-					this.finishReportUrl = res.result.data.finishReportUrl
+					let data = res.result.data
+					this.pptUrl = data.pptUrl
+					this.zipUrl = data.zipUrl
+					this.finishReportUrl = data.finishReportUrl
+					this.shareForm.stage = data.stage
+					this.shareForm.city = data.city
+					this.shareForm.orderId = data.orderId
+					this.getPro()
 				}
+		
 			})
 		},
 		// 获取进度条
@@ -225,14 +230,16 @@ export default {
 				api: 'sgTaskSpeedProgress',
 				method: 'post',
 				data: {
-					orderId: this.orderId,
-					stage: this.stage,
-					city: this.city,
+					orderId: this.shareForm.orderId,
+					stage: this.shareForm.stage,
+					city: this.shareForm.city,
 					current: 1,
 					size: 10
 				}
 			}).then(res => {
 				if (res.result.code === 200) {
+					console.log(res.result.data)
+					debugger
 					let progress = res.result.data.progress
 					this.percentage = progress
 				}
