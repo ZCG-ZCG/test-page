@@ -12,33 +12,69 @@
         @pulling-down="onPullingDown"
         @pulling-up="onPullingUp"
       >
-        <div class="title" style="padding-top:30px;">亲爱的客户：您的方案执行进度如下</div>
+        <div
+          class="title"
+          style="padding-top:30px;"
+        >亲爱的客户：您的方案执行进度如下</div>
         <el-row class="layout-margin">
           <el-col :span="8">
             <span>总任务进度：</span>
           </el-col>
           <el-col :span="10">
-            <el-progress :percentage="percentage"></el-progress>
+            <el-progress
+              :percentage="percentage"
+              type="line"
+              :show-text="true"
+            ></el-progress>
           </el-col>
         </el-row>
 
         <!-- 一行中三个下载按钮 -->
-        <el-row class="layout-margin" type="flex">
-          <el-col :span="6" style="margin-right:20px;">
-            <el-button type="primary" @click="downPositionImg">下载点位照片</el-button>
+        <el-row
+          class="layout-margin"
+          type="flex"
+        >
+          <el-col
+            :span="6"
+            style="margin-right:20px;"
+          >
+            <el-button
+              type="primary"
+              @click="downPositionImg"
+            >下载点位照片</el-button>
           </el-col>
-          <el-col :span="6" style="margin-right:20px;">
-            <el-button type="primary" @click="downPPT">下载监测PPT</el-button>
+          <el-col
+            :span="6"
+            style="margin-right:20px;"
+          >
+            <el-button
+              type="primary"
+              @click="downPPT"
+            >下载监测PPT</el-button>
           </el-col>
-          <el-col :span="6" style="margin-right:20px;">
-            <el-button type="primary" @click="downComplateReporter">下载完工报告</el-button>
+          <el-col
+            :span="6"
+            style="margin-right:20px;"
+          >
+            <el-button
+              type="primary"
+              @click="downComplateReporter"
+            >下载完工报告</el-button>
           </el-col>
         </el-row>
 
-        <el-row v-for="(item,index) in imgList" :key="index" style="margin-top:20px;">
+        <el-row
+          v-for="(item,index) in imgList"
+          :key="index"
+          style="margin-top:20px;"
+        >
           <el-col :span="24">
             <div>
-              <img class="image" style="width:300px;" :src="item.imgUrl" />
+              <img
+                class="image"
+                style="width:300px;"
+                :src="item.imgUrl"
+              />
               <div>
                 <span>{{item.estateName}} {{item.position}} {{item.resourceNo}}</span>
                 <!-- <span>{{item.id}}</span> -->
@@ -59,14 +95,16 @@
         </el-row>-->
       </vue-better-scroll>
     </main>
-    <button class="go-top" @click="scrollTo">返回顶部</button>
+    <button
+      class="go-top"
+      @click="scrollTo"
+    >返回顶部</button>
   </div>
 </template>
 
 <script>
 import HttpUtils from '../util/HttpUtils'
 import { getCookie } from '../util/CookieUtils'
-
 
 export default {
 	beforeCreate() {
@@ -93,7 +131,7 @@ export default {
 			},
 			startY: 0, // 纵轴方向初始化位置
 			code: '',
-			percentage: 0,
+			percentage: 100,
 			estateName: '',
 			pptUrl: '',
 			zipUrl: '',
@@ -110,7 +148,7 @@ export default {
 	},
 	created() {
 		this.code = JSON.parse(getCookie('extractedCode'))
-	
+
 		this.onPullingDown()
 		this.getDownUrl()
 		// this.getPro()
@@ -191,7 +229,7 @@ export default {
 					}
 				}).then(res => {
 					if (res.result.code === 200) {
-						let data = res.result.data	
+						let data = res.result.data
 						this.pages = res.result.meta.pages
 						let temp = []
 						data.map(val => {
@@ -221,7 +259,6 @@ export default {
 					this.shareForm.orderId = data.orderId
 					this.getPro()
 				}
-		
 			})
 		},
 		// 获取进度条
@@ -238,8 +275,8 @@ export default {
 				}
 			}).then(res => {
 				if (res.result.code === 200) {
-					console.log(res.result.data)
-					debugger
+					// console.log(res.result.data)
+
 					let progress = res.result.data.progress
 					this.percentage = progress
 				}
@@ -252,14 +289,12 @@ export default {
 <style lang="stylus" scoped>
 .layout-margin
   margin-top 10px
-
 .position-box
   position fixed
   top 0px
   left 0
   right 0
   bottom 0
-
 .go-top
   position fixed
   right 20px

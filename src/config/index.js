@@ -13,6 +13,6 @@ export default {
 		// 查找订单城市
 		findCity: apiHost + '/extraction/findCity',
 		// 获取任务详情进度条
-		sgTaskSpeedProgress: apiHost + '/task/sgTaskSpeedProgress',
+		sgTaskSpeedProgress: apiHost + '/task/sgTaskSpeedProgress'
 	}
 }
