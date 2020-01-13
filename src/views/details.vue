@@ -12,69 +12,36 @@
         @pulling-down="onPullingDown"
         @pulling-up="onPullingUp"
       >
-        <div
-          class="title"
-          style="padding-top:30px;"
-        >亲爱的客户：您的方案执行进度如下</div>
+        <div class="title" style="padding-top:30px;">亲爱的客户：您的方案执行进度如下</div>
         <el-row class="layout-margin">
           <el-col :span="8">
             <span>总任务进度：</span>
           </el-col>
           <el-col :span="10">
-            <el-progress
-              :percentage="percentage"
-              type="line"
-              :show-text="true"
-            ></el-progress>
+            <el-progress :percentage="percentage" type="line" :show-text="true"></el-progress>
           </el-col>
         </el-row>
 
         <!-- 一行中三个下载按钮 -->
-        <el-row
-          class="layout-margin"
-          type="flex"
-        >
-          <el-col
-            :span="6"
-            style="margin-right:20px;"
-          >
-            <el-button
-              type="primary"
-              @click="downPositionImg"
-            >下载点位照片</el-button>
+        <el-row class="layout-margin" type="flex" :span="24">
+          <el-col :span="4" style="margin-right:20px;" v-if="orderShare">
+            <el-button type="primary" @click="downPositionImg">下载点位照片</el-button>
           </el-col>
-          <el-col
-            :span="6"
-            style="margin-right:20px;"
-          >
-            <el-button
-              type="primary"
-              @click="downPPT"
-            >下载监测PPT</el-button>
+          <el-col :span="4" style="margin-right:20px;" v-if="orderShare" :offset="3">
+            <el-button type="primary" @click="downPPT">下载监测PPT</el-button>
           </el-col>
-          <el-col
-            :span="6"
-            style="margin-right:20px;"
-          >
-            <el-button
-              type="primary"
-              @click="downComplateReporter"
-            >下载完工报告</el-button>
+          <el-col :span="4" style="margin-right:20px;" v-if="orderShare" :offset="3">
+            <el-button type="primary" @click="downComplateReporter">下载完工报告</el-button>
+          </el-col>
+          <el-col :span="8" style="margin-right:20px;" v-if="!orderShare" :offset="8">
+            <el-button type="primary" @click="downShareZip">下载速上刊照</el-button>
           </el-col>
         </el-row>
 
-        <el-row
-          v-for="(item,index) in imgList"
-          :key="index"
-          style="margin-top:20px;"
-        >
+        <el-row v-for="(item,index) in imgList" :key="index" style="margin-top:20px;">
           <el-col :span="24">
             <div>
-              <img
-                class="image"
-                style="width:300px;"
-                :src="item.imgUrl"
-              />
+              <img class="image" style="width:300px;" :src="item.imgUrl" />
               <div>
                 <span>{{item.estateName}} {{item.position}} {{item.resourceNo}}</span>
                 <!-- <span>{{item.id}}</span> -->
@@ -95,10 +62,7 @@
         </el-row>-->
       </vue-better-scroll>
     </main>
-    <button
-      class="go-top"
-      @click="scrollTo"
-    >返回顶部</button>
+    <button class="go-top" @click="scrollTo">返回顶部</button>
   </div>
 </template>
 
@@ -131,6 +95,7 @@ export default {
 			},
 			startY: 0, // 纵轴方向初始化位置
 			code: '',
+			orderShare: false,
 			percentage: 100,
 			estateName: '',
 			pptUrl: '',
@@ -173,6 +138,23 @@ export default {
 				this.$message.error('暂时没有数据！')
 			}
 		},
+		// 下载快速上刊照
+		downShareZip() {
+			// console.log(this.shareForm)
+			HttpUtils.request({
+				api: 'downZipShare',
+				method: 'post',
+				data: this.shareForm
+			}).then(res => {
+				let shareZipUrl = res.result.data.zipdir
+
+				if (shareZipUrl) {
+					window.location.href = shareZipUrl
+				} else {
+					this.$message.error('暂时没有数据！')
+				}
+			})
+		},
 		// 下载完工报告
 		downComplateReporter() {
 			if (this.finishReportUrl) {
@@ -206,7 +188,7 @@ export default {
 			++this.current
 
 			this.getDetails().then(res => {
-				if (this.current < this.pages) {
+				if (this.current <= this.pages) {
 					// console.log(res)
 					this.imgList = this.imgList.concat(res)
 					this.$refs.scroll.forceUpdate(true)
@@ -236,6 +218,7 @@ export default {
 							temp.push(val)
 						})
 						resolve(temp)
+						// console.log(data)
 					}
 				})
 			})
@@ -258,6 +241,9 @@ export default {
 					this.shareForm.city = data.city
 					this.shareForm.orderId = data.orderId
 					this.getPro()
+					if (data.orderShare) {
+						this.orderShare = data.orderShare
+					}
 				}
 			})
 		},

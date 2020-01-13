@@ -1,6 +1,6 @@
-const apiHost = 'http://39.100.53.120:8000'
+// const apiHost = 'http://39.100.53.120:8000'
 // const apiHost = 'http://192.168.1.178:8000'
-// const apiHost = 'http://192.168.1.233:8000'
+const apiHost = 'http://192.168.1.233:8000'
 // const apiHost = 'http://epai.shxiot.cn:8000'
 export default {
 	api: {
@@ -13,6 +13,8 @@ export default {
 		// 查找订单城市
 		findCity: apiHost + '/extraction/findCity',
 		// 获取任务详情进度条
-		sgTaskSpeedProgress: apiHost + '/task/sgTaskSpeedProgress'
+		sgTaskSpeedProgress: apiHost + '/task/sgTaskSpeedProgress',
+		// 下载快速上刊照
+		downZipShare: apiHost+ '/extraction/downZipShare' 
 	}
 }
