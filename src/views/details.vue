@@ -25,16 +25,16 @@
         <!-- 一行中三个下载按钮 -->
         <el-row class="layout-margin" type="flex" :span="24">
           <el-col :span="4" style="margin-right:20px;" v-if="orderShare">
-            <el-button type="primary" @click="downPositionImg">下载点位照片</el-button>
+            <el-button type="primary" @click="downPositionImg" size="mini">下载点位照片</el-button>
           </el-col>
           <el-col :span="4" style="margin-right:20px;" v-if="orderShare" :offset="3">
-            <el-button type="primary" @click="downPPT">下载监测PPT</el-button>
+            <el-button type="primary" @click="downPPT" size="mini">下载监测PPT</el-button>
           </el-col>
           <el-col :span="4" style="margin-right:20px;" v-if="orderShare" :offset="3">
-            <el-button type="primary" @click="downComplateReporter">下载完工报告</el-button>
+            <el-button type="primary" @click="downComplateReporter" size="mini">下载完工报告</el-button>
           </el-col>
           <el-col :span="8" style="margin-right:20px;" v-if="!orderShare" :offset="8">
-            <el-button type="primary" @click="downShareZip">下载速上刊照</el-button>
+            <el-button type="primary" @click="downShareZip" size="mini">下载快速上刊照</el-button>
           </el-col>
         </el-row>
 
@@ -62,7 +62,7 @@
         </el-row>-->
       </vue-better-scroll>
     </main>
-    <button class="go-top" @click="scrollTo">返回顶部</button>
+    <button class="go-top" @click="scrollTo" size="mini">返回顶部</button>
   </div>
 </template>
 
@@ -96,7 +96,7 @@ export default {
 			startY: 0, // 纵轴方向初始化位置
 			code: '',
 			orderShare: false,
-			percentage: 100,
+			percentage: 0,
 			estateName: '',
 			pptUrl: '',
 			zipUrl: '',
@@ -146,8 +146,7 @@ export default {
 				method: 'post',
 				data: this.shareForm
 			}).then(res => {
-				let shareZipUrl = res.result.data.zipdir
-
+				let shareZipUrl = res.result.data.zipUrl
 				if (shareZipUrl) {
 					window.location.href = shareZipUrl
 				} else {
@@ -290,4 +289,5 @@ export default {
   border 1px solid #fff
   color #fff
   padding 10px 15px
+
 </style>
