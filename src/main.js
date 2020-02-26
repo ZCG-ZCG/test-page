@@ -12,7 +12,6 @@ Vue.use(Lazyload)
 Vue.config.productionTip = false
 
 
-
 new Vue({
 	router,
 	store,
