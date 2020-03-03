@@ -225,7 +225,7 @@ export default {
 		// 获取下载地址
 		getDownUrl() {
 			HttpUtils.request({
-				api: 'downExtraction',
+				api: 'findOrder',
 				method: 'post',
 				data: {
 					extractedCode: this.code
