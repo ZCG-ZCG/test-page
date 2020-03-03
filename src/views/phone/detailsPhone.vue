@@ -189,7 +189,7 @@ export default {
 		// 获取下载地址和客户信息
 		getDownUrl() {
 			HttpUtils.request({
-				api: 'downExtraction',
+				api: 'findOrder',
 				method: 'post',
 				data: {
 					extractedCode: this.code

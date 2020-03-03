@@ -3,9 +3,15 @@
     <img src="@/assets/pc/entry_bg.png" alt />
 
     <main class="home">
-			<p class="title-text">请输入提取码：</p>
-			<el-input v-model="codeForm.code" class="code-input" placeholder="请输入提取码" clearable size="medium"></el-input>
-			<el-button type="primary" class="sub-btn" @click="getSharePage">确 定</el-button>
+      <p class="title-text">请输入提取码：</p>
+      <el-input
+        v-model="codeForm.code"
+        class="code-input"
+        placeholder="请输入提取码"
+        clearable
+        size="medium"
+      ></el-input>
+      <el-button type="primary" class="sub-btn" @click="getSharePage">确 定</el-button>
     </main>
   </div>
 </template>
@@ -32,7 +38,7 @@ export default {
 			}
 
 			HttpUtils.request({
-				api: 'findExtraction',
+				api: 'findOrder',
 				method: 'post',
 				data: {
 					size: 1,
@@ -40,10 +46,10 @@ export default {
 					extractedCode: this.codeForm.code
 				}
 			}).then(res => {
-				// console.log(res)
 				if (res.result.code === 200) {
 					this.$router.replace('/detailsPc')
-
+					let data = res.result.data
+					setCookie('shareForm', JSON.stringify(data))
 					setCookie('extractedCode', JSON.stringify(this.codeForm.code))
 				} else {
 					this.$message.error(
@@ -65,12 +71,12 @@ export default {
   transform translateY(50%)
   border-radius 10px
   box-shadow 0px 0px 14px 0px rgba(0, 0, 0, 0.15)
-	.title-text
-		padding 5.55vh 0px 0px 3.125vw
-		font-size 20px
-	.code-input
-		width 80%
-		margin 4vh 0 2vh 3.125vw
-	.sub-btn
-		margin 2.5vh auto 0 12vw
+.title-text
+  padding 5.55vh 0px 0px 3.125vw
+  font-size 20px
+.code-input
+  width 80%
+  margin 4vh 0 2vh 3.125vw
+.sub-btn
+  margin 2.5vh auto 0 12vw
 </style>
