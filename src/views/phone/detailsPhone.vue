@@ -19,8 +19,20 @@
           </el-row>
 
           <el-row style="margin-top:4.5vh" :gutter="24">
-            <el-col :span="7" v-if="shareForm.orderShare">
-              <div class="btn-background-size down-position-img flex-auto" @click="downPositionImg">
+            <el-col :span="7">
+              <div
+                class="btn-background-size down-position-img flex-auto"
+                @click="downPositionImg"
+                v-if="shareForm.orderShare === 1"
+              >
+                <img src="../../assets/phone/downPositionInner.png" style="width:20%" />
+                <span style="color:#FFF;margin-left:5px;;font-size:10px;">下 载 点 位 照 片</span>
+              </div>
+              <div
+                class="btn-background-size down-position-img flex-auto"
+                @click="downShareZip(2)"
+                v-if="shareForm.orderShare === 0"
+              >
                 <img src="../../assets/phone/downPositionInner.png" style="width:20%" />
                 <span style="color:#FFF;margin-left:5px;;font-size:10px;">下 载 点 位 照 片</span>
               </div>
@@ -41,39 +53,89 @@
               </div>
             </el-col>
 
-            <el-col :span="16" :offset="7" v-if="!shareForm.orderShare">
-              <div class="btn-background-size downPPT flex-auto" @click="downShareZip">
+            <el-col :span="7" :offset="5" v-if="!shareForm.orderShare">
+              <div class="btn-background-size downPPT flex-auto" @click="downShareZip(9)">
                 <img src="../../assets/phone/downShareZip.png" style="width:20%" />
                 <span style="color:#FFF;margin-left:5px;font-size:10px;">下 载 快 速 上 刊 照</span>
               </div>
             </el-col>
           </el-row>
 
-          <el-row
-            style="margin-top:5vh"
-            v-infinite-scroll="loadMore"
-            infinite-scroll-disabled="disabled"
-            :infinite-scroll-immediate="false"
-            :infinite-scroll-distance="20"
-          >
-            <el-col
-              v-for="(item,index) in imgList"
-              :key="item.id"
-              :span="11"
-              :offset="index % 2 ? 1 : 0"
-              style="margin-bottom:3.37vh"
+          <div v-if="shareForm.orderShare === 1">
+            <el-row
+              style="margin-top:5vh"
+              v-infinite-scroll="sharedLoadMore"
+              infinite-scroll-disabled="disabled"
+              infinite-scroll-distance="10"
+              infinite-scroll-immediate="false"
             >
-              <div>
-                <el-image :src="item.imgUrl" class="img-size" :preview-src-list="[item.imgUrl]" />
-                <span>{{item.estateName}} {{item.buildingNum}} {{item.liftNum}} {{item.position}}</span>
-              </div>
-            </el-col>
-          </el-row>
+              <el-col
+                v-for="(item,index) in positionImgList"
+                :key="item.id"
+                :span="11"
+                :offset="index % 2 ? 1 : 0"
+                style="margin-bottom:3.37vh"
+              >
+                <div>
+                  <el-image :src="item.imgUrl" class="img-size" :preview-src-list="[item.imgUrl]" />
+                  <span>{{item.estateName}} {{item.buildingNum}} {{item.liftNum}} {{item.position}}</span>
+                </div>
+              </el-col>
+            </el-row>
+            <p
+              v-if="showLoading"
+              v-loading="showLoading"
+              element-loading-text="拼命加载中..."
+              element-loading-spinner="el-icon-loading"
+            ></p>
+
+            <el-divider v-if="noMore" content-position="center"></el-divider>
+          </div>
+
+          <div v-if="shareForm.orderShare === 0">
+            <el-row style="margin-top:1.5vh">
+              <p style="color:#03AEFE;font-size:1rem">点位照片</p>
+
+              <!-- <div class="scroll-view"> -->
+              <el-col
+                v-for="(item,index) in percentageImgList"
+                :key="item.id"
+                :offset="index % 2 ? 1 : 0"
+                :span="11"
+                style="margin-top:3vh"
+              >
+                <div>
+                  <el-image :src="item.imgUrl" class="img-size" :preview-src-list="[item.imgUrl]" />
+                  <span
+                    style="font-size:0.9rem"
+                  >{{item.estateName}} {{item.buildingNum}} {{item.liftNum}} {{item.position}}</span>
+                </div>
+              </el-col>
+              <!-- </div> -->
+            </el-row>
+
+            <el-row style="margin-top:1.8vh">
+              <p style="color:#03AEFE;font-size:1rem">快速上刊照</p>
+
+              <!-- <div class="scroll-view"> -->
+              <el-col
+                v-for="(item,index) in fastImgList"
+                :key="item.id"
+                :offset="index % 2 ? 1 : 0"
+                :span="11"
+                style="margin-top:3vh"
+              >
+                <div>
+                  <el-image :src="item.imgUrl" class="img-size" :preview-src-list="[item.imgUrl]" />
+                  <span
+                    style="font-size:0.9rem"
+                  >{{item.estateName}} {{item.buildingNum}} {{item.liftNum}} {{item.position}}</span>
+                </div>
+              </el-col>
+              <!-- </div> -->
+            </el-row>
+          </div>
         </el-main>
-
-        <p v-if="loading">正在拼命加载中...</p>
-
-        <el-divider v-if="noMore" content-position="center">我也是有底线的</el-divider>
       </el-container>
     </main>
   </div>
@@ -88,73 +150,125 @@ export default {
 	data() {
 		return {
 			code: '',
-			shareForm: {
-				city: '',
-				stage: '',
-				orderId: '',
-				orderShare: 0
-			},
-			current: 1,
-			total: 0,
-			imgList: [],
-			loading: false, //是否正在加载过程中
+			shareForm: {},
+			positionCurrent: 1,
+			positionPage: 0,
+			positionImgList: [],
+			fastImgList: [],
+			percentageImgList: [],
+
+			showLoading: false, //是否正在加载过程中
 			percentage: 0
 		}
 	},
 	created() {
-		// console.log(this.$route)
 		this.code = JSON.parse(getCookie('extractedCode'))
-		this.getImgList()
-		this.getDownUrl()
+		this.shareForm = JSON.parse(getCookie('shareForm'))
+		console.log(this.shareForm)
+		// 当审核关闭时，需要加载10%的点位照片
+		if (this.shareForm.orderShare === 0) {
+			// debugger
+			this.getPercentImgList()
+			this.getFastImgList()
+		} else if (this.shareForm.orderShare === 1) {
+			this.getPositionImgList()
+		}
+		this.getProgress()
 	},
 	computed: {
 		noMore() {
-			return this.current * 4 > this.total
+			//当起始页数大于总页数时停止加载
+			return this.positionCurrent >= this.positionPage
 		},
 		disabled() {
-			return this.loading || this.noMore
+			return this.showLoading || this.noMore
 		}
 	},
 	methods: {
-		getImgList() {
+		// 审核状态打开时下滑加载更多
+		sharedLoadMore() {
+			this.showLoading = true
+			this.positionCurrent++
+			setTimeout(() => {
+				this.getPositionImgList()
+			}, 2000)
+		},
+		// 获取一定比例的点位照片
+		getPercentImgList() {
 			HttpUtils.request({
-				api: 'findExtraction',
+				api: 'findPercentPage',
 				method: 'post',
 				data: {
-					size: 4,
-					current: this.current,
+					size: 999,
+					current: 1,
+					extractedCode: this.code
+				}
+			}).then(res => {
+				// console.log(res)
+				let temp = []
+				let data = res.result.data
+				data.map(item => {
+					temp.push(item)
+				})
+				this.percentageImgList.push(...temp)
+			})
+		},
+		// 获取快速上刊照
+		getFastImgList() {
+			HttpUtils.request({
+				api: 'findFastPhoto',
+				method: 'post',
+				data: {
+					size: 999,
+					current: 1,
 					extractedCode: this.code
 				}
 			}).then(res => {
 				let temp = []
 				let data = res.result.data
-				this.total = res.result.meta.total
+				data.map(item => {
+					temp.push(item)
+				})
+				this.fastImgList.push(...temp)
+			})
+		},
+		// 获取点位信息照片集合,
+		getPositionImgList() {
+			HttpUtils.request({
+				api: 'findExtraction',
+				method: 'post',
+				data: {
+					size: 8,
+					current: this.positionCurrent,
+					extractedCode: this.code
+				}
+			}).then(res => {
+				let temp = []
+				let data = res.result.data
+				this.positionPage = res.result.meta.pages
 
 				data.map(item => {
 					temp.push(item)
 				})
-				this.imgList.push(...temp)
-				console.log(this.imgList)
-				this.loading = false
-				debugger
+
+				this.positionImgList.push(...temp)
+				this.showLoading = false
 			})
 		},
-		// 下滑加载更多
-		loadMore() {
-			this.loading = true
-			++this.current
-			this.getImgList()
-		},
+
 		// 下载快速上刊照
-		downShareZip() {
-			let { city, stage, orderId } = this.shareForm
+		downShareZip(type) {
+			// 快速上刊照9  点位2
+			let { city, stage, orderId, newPoster } = this.shareForm
 			HttpUtils.request({
 				api: 'downZipShare',
 				method: 'post',
 				data: {
 					city,
 					stage,
-					orderId
+					orderId,
+					type,
+					newPoster
 				}
 			}).then(res => {
 				let shareZipUrl = res.result.data.zipUrl
@@ -186,23 +300,7 @@ export default {
 				? (window.location.href = finishReportUrl)
 				: this.$message.error('暂时没有数据！')
 		},
-		// 获取下载地址和客户信息
-		getDownUrl() {
-			HttpUtils.request({
-				api: 'findOrder',
-				method: 'post',
-				data: {
-					extractedCode: this.code
-				}
-			}).then(res => {
-				if (res.result.code === 200) {
-					let data = res.result.data
-					this.shareForm = Object.assign({}, data)
-					console.log(this.shareForm)
-					this.getProgress()
-				}
-			})
-		},
+
 		// 获取进度条
 		getProgress() {
 			HttpUtils.request({

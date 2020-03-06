@@ -47,7 +47,7 @@ export default {
 				}
 			}).then(res => {
 				if (res.result.code === 200) {
-					this.$router.replace('/detailsPc')
+					this.$router.replace('/detailsPhone')
 					let data = res.result.data
 					setCookie('shareForm', JSON.stringify(data))
 					setCookie('extractedCode', JSON.stringify(this.codeForm.code))
