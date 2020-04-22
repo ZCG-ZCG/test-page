@@ -18,6 +18,20 @@
             </el-col>
           </el-row>
 
+          <el-row style="margin-top:3vh; font-size:14px">
+            <el-col :span="8">客户名称：</el-col>
+            <el-col :span="16">{{shareForm.newPoster}}</el-col>
+          </el-row>
+
+          <el-row style="margin-top:3vh; font-size:14px">
+            <el-col :span="8">发布日期：</el-col>
+            <el-col :span="16">{{shareForm.createTime}}</el-col>
+          </el-row>
+
+          <el-row style="margin-top:3vh; font-size:14px">
+            <el-col :span="8">发布城市：</el-col>
+            <el-col :span="16">{{shareForm.city}}</el-col>
+          </el-row>
           <el-row style="margin-top:4.5vh" :gutter="24">
             <el-col :span="7">
               <div

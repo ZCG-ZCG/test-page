@@ -18,6 +18,17 @@
             </el-col>
           </el-row>
 
+          <el-row style="margin-top:2.5vh;">
+            <el-col :span="2">客户名称：</el-col>
+            <el-col :span="2">{{shareForm.newPoster}}</el-col>
+
+            <el-col :span="2" :offset="2">发布时间：</el-col>
+            <el-col :span="2">{{shareForm.createTime}}</el-col>
+
+            <el-col :span="2" :offset="2">发布城市：</el-col>
+            <el-col :span="2">{{shareForm.city}}</el-col>
+          </el-row>
+
           <el-row style="margin-top:3.7vh" :gutter="24">
             <el-col :span="4">
               <div
@@ -261,7 +272,7 @@ export default {
 
 		// 下载快速上刊照
 		downShareZip(type) {
-		// 快速上刊照9  点位2  
+			// 快速上刊照9  点位2
 			let { city, stage, orderId, newPoster } = this.shareForm
 			HttpUtils.request({
 				api: 'downZipShare',
